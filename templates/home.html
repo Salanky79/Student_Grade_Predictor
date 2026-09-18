@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Predictor</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #121316;
+            --bg-card: #1c1e24;
+            --bg-input: #272a34;
+            --border-color: #343844;
+            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            background-image: radial-gradient(circle at 50% 0%, #252836 0%, #121316 75%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        /* Animation xuất hiện card */
+        .main-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card-header-custom {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #d1d5db;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        /* Input & Select hiệu ứng hover/focus mượt mà */
+        .form-control, .form-select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: #f9fafb;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.25s ease-in-out;
+        }
+
+        .form-control::placeholder {
+            color: #6b7280;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #2e323e;
+            border-color: #6366f1;
+            color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .form-select option {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        /* Nút Submit hiệu ứng phóng to & đổ bóng */
+        .btn-predict {
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(99, 102, 241, 0.45);
+            color: white;
+        }
+
+        .btn-predict:active {
+            transform: translateY(-1px) scale(0.99);
+        }
+
+        /* Khung điểm số phát sáng */
+        .result-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 28px;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .result-score {
+            color: #10b981;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            animation: pulseGlow 2.5s infinite alternate;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(35px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulseGlow {
+            from {
+                text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+            }
+            to {
+                text-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card main-card">
+                
+                <div class="card-header-custom">
+                    <h2 class="fw-bold mb-1">Student Performance Predictor</h2>
+                    <p class="mb-0 opacity-75">Dự đoán điểm môn Toán dựa trên thông tin cá nhân và điểm số liên quan</p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <form action="/" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Giới tính (Gender)</label>
+                                <select class="form-select" name="gender" required>
+                                    <option selected disabled value="">Chọn giới tính</option>
+                                    <option value="male">Nam (Male)</option>
+                                    <option value="female">Nữ (Female)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Nhóm dân tộc (Race/Ethnicity)</label>
+                                <select class="form-select" name="ethnicity" required>
+                                    <option selected disabled value="">Chọn nhóm dân tộc</option>
+                                    <option value="group A">Group A</option>
+                                    <option value="group B">Group B</option>
+                                    <option value="group C">Group C</option>
+                                    <option value="group D">Group D</option>
+                                    <option value="group E">Group E</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Học vấn phụ huynh (Parental Education)</label>
+                                <select class="form-select" name="parental_level_of_education" required>
+                                    <option selected disabled value="">Chọn trình độ</option>
+                                    <option value="some high school">Thấp hơn Cấp 3 (Some High School)</option>
+                                    <option value="high school">Tốt nghiệp Cấp 3 (High School)</option>
+                                    <option value="some college">Cao đẳng / Đại học dở dang</option>
+                                    <option value="associate's degree">Bằng Cao đẳng (Associate)</option>
+                                    <option value="bachelor's degree">Bằng Cử nhân (Bachelor)</option>
+                                    <option value="master's degree">Bằng Thạc sĩ (Master)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Khẩu phần ăn trưa (Lunch Type)</label>
+                                <select class="form-select" name="lunch" required>
+                                    <option selected disabled value="">Chọn loại bữa trưa</option>
+                                    <option value="standard">Tiêu chuẩn (Standard)</option>
+                                    <option value="free/reduced">Miễn phí / Giảm giá (Free/Reduced)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 mb-2">
+                                <label class="form-label">Khóa chuẩn bị trước kỳ thi (Test Prep Course)</label>
+                                <select class="form-select" name="test_preparation_course" required>
+                                    <option selected disabled value="">Chọn tình trạng hoàn thành</option>
+                                    <option value="none">Chưa tham gia (None)</option>
+                                    <option value="completed">Đã hoàn thành (Completed)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Điểm Đọc / Reading Score (0 - 100)</label>
+                                <input class="form-control" type="number" name="reading_score" 
+                                       placeholder="Nhập điểm đọc..." min="0" max="100" required />
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label">Điểm Viết / Writing Score (0 - 100)</label>
+                                <input class="form-control" type="number" name="writing_score" 
+                                       placeholder="Nhập điểm viết..." min="0" max="100" required />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button class="btn btn-predict" type="submit">
+                                📊 Dự đoán điểm Toán ngay
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if results %}
+                    <div class="result-box">
+                        <div class="text-muted fw-semibold mb-1" style="font-size: 0.85rem; letter-spacing: 1px;">
+                            DỰ ĐOÁN ĐIỂM THI MÔN TOÁN
+                        </div>
+                        <div class="result-score">{{ results | round(2) }}</div>
+                        <small class="text-muted">Mô hình Machine Learning đã tính toán hoàn tất</small>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
