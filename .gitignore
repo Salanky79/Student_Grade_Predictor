@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Bỏ qua toàn bộ file log của CatBoost
+**/catboost_info/
+*.tfevents
+
+# Bỏ qua checkpoint tự động của Jupyter Notebook
+.ipynb_checkpoints/
