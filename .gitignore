@@ -223,3 +223,4 @@ __marimo__/
 
 # Bỏ qua checkpoint tự động của Jupyter Notebook
 .ipynb_checkpoints/
+.artifacts
